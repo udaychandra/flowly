@@ -1,0 +1,97 @@
+{
+  "id": "1234123412340",
+  "name": "First interactive service",
+  "variables": [
+    {
+      "name": "emailSubject",
+      "type": "String",
+      "isCollection": false,
+      "scope": "Private"
+    },
+    {
+      "name": "emailBody",
+      "type": "String",
+      "isCollection": false,
+      "scope": "Private"
+    },
+    {
+      "name": "emailTo",
+      "type": "String",
+      "isCollection": false,
+      "scope": "Private"
+    },
+    {
+      "name": "emailResult",
+      "type": "Boolean",
+      "isCollection": false,
+      "scope": "Private"
+    }
+  ],
+  "flowObjects": [
+    {
+      "id": "3001",
+      "name": "Start view",
+      "type": "StartEvent"
+    },
+    {
+      "id": "3003",
+      "name": "Compose Email",
+      "type": "View",
+      "refViewId": "888999000"
+    },
+    {
+      "id": "3005",
+      "name": "sendmail",
+      "type": "SubFlow",
+      "subFlowType": "MicroService",
+      "address": "io.flowly.engine.email.send",
+      "dataMappings": [
+        {
+          "from": "data.emailTo",
+          "to": "emailTo",
+          "scope": "Input"
+        },
+        {
+          "from": "data.emailSubject",
+          "to": "emailSubject",
+          "scope": "Input"
+        },
+        {
+          "from": "data.emailBody",
+          "to": "emailBody",
+          "scope": "Input"
+        },
+        {
+          "from": "result",
+          "to": "data.emailResult",
+          "scope": "Output"
+        }
+      ]
+    },
+    {
+      "id": "3007",
+      "name": "End",
+      "type": "EndEvent"
+    }
+  ],
+  "connectingObjects": [
+    {
+      "id": "3002",
+      "name": "sequence 1",
+      "fromId": "3001",
+      "toId": "3003"
+    },
+    {
+      "id": "3004",
+      "name": "sequence 2",
+      "fromId": "3003",
+      "toId": "3005"
+    },
+    {
+      "id": "3006",
+      "name": "sequence 3",
+      "fromId": "3005",
+      "toId": "3007"
+    }
+  ]
+}

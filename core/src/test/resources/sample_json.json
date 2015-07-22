@@ -1,0 +1,13 @@
+{
+  "string": "sample test",
+  "truthy": true,
+  "number": 1234567,
+  "digit": 10,
+  "children": [
+    {
+      "string": "child 1",
+      "truthy": false,
+      "number": 7654321
+    }
+  ]
+}

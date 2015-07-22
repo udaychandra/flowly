@@ -1,0 +1,118 @@
+{
+  "id": "1234123443219",
+  "name": "Send Email Service",
+  "description": "Example user micro service",
+  "variables": [
+    {
+      "name": "emailSubject",
+      "type": "String",
+      "isCollection": false,
+      "scope": "Input"
+    },
+    {
+      "name": "emailBody",
+      "type": "String",
+      "isCollection": false,
+      "scope": "Input"
+    },
+    {
+      "name": "emailTo",
+      "type": "String",
+      "isCollection": true,
+      "scope": "Input"
+    },
+    {
+      "name": "index",
+      "type": "Integer",
+      "isCollection": false,
+      "scope": "Private"
+    },
+    {
+      "name": "success",
+      "type": "Boolean",
+      "isCollection": false,
+      "scope": "Output"
+    }
+  ],
+  "flowObjects": [
+    {
+      "id": "5001",
+      "name": "start process",
+      "type": "StartEvent"
+    },
+    {
+      "id": "5003",
+      "name": "Initialize",
+      "type": "InlineScript",
+      "scriptRefId": "1429372764301"
+    },
+    {
+      "id": "5005",
+      "name": "More recipients?",
+      "type": "DecisionGateway",
+      "conditions": [
+        {
+          "when": "data.index < data.emailTo.length",
+          "connectTo": "5006"
+        },
+        {
+          "connectTo": "5011"
+        }
+      ]
+    },
+    {
+      "id": "5007",
+      "name": "Mock email",
+      "type": "InlineScript"
+    },
+    {
+      "id": "5009",
+      "name": "Increment Index",
+      "type": "InlineScript",
+      "scriptRefId": "1429372764271"
+    },
+    {
+      "id": "5012",
+      "name": "End",
+      "type": "EndEvent"
+    }
+  ],
+  "connectingObjects": [
+    {
+      "id": "5002",
+      "name": "sequence 1",
+      "fromId": "5001",
+      "toId": "5003"
+    },
+    {
+      "id": "5004",
+      "name": "sequence 2",
+      "fromId": "5003",
+      "toId": "5005"
+    },
+    {
+      "id": "5006",
+      "name": "sequence 3",
+      "fromId": "5005",
+      "toId": "5007"
+    },
+    {
+      "id": "5008",
+      "name": "sequence 4",
+      "fromId": "5007",
+      "toId": "5009"
+    },
+    {
+      "id": "5010",
+      "name": "sequence 5",
+      "fromId": "5009",
+      "toId": "5005"
+    },
+    {
+      "id": "5011",
+      "name": "sequence 6",
+      "fromId": "5005",
+      "toId": "5012"
+    }
+  ]
+}

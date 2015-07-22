@@ -1,0 +1,52 @@
+{
+  "id": "1429373120535",
+  "name": "Flow with interactive service",
+  "description": "Interactive service example",
+  "variables": [
+  ],
+  "swimLanes": [
+    {
+      "id": "sl-2",
+      "name": "Only Swim Lane",
+      "description": ""
+    }
+  ],
+  "flowObjects": [
+    {
+      "id": "2001",
+      "name": "start process",
+      "type": "StartEvent",
+      "swimLaneId": "sl-2"
+    },
+    {
+      "id": "2003",
+      "name": "Send email",
+      "type": "SubFlow",
+      "subFlowType": "InteractiveService",
+      "subFlowId": "1234123412340",
+      "swimLaneId": "sl-2",
+      "dataMappings": [
+      ]
+    },
+    {
+      "id": "2005",
+      "name": "End",
+      "type": "EndEvent",
+      "swimLaneId": "sl-2"
+    }
+  ],
+  "connectingObjects": [
+    {
+      "id": "2002",
+      "name": "sequence 1",
+      "fromId": "2001",
+      "toId": "2003"
+    },
+    {
+      "id": "2004",
+      "name": "sequence 2",
+      "fromId": "2003",
+      "toId": "2005"
+    }
+  ]
+}

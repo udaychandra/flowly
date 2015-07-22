@@ -1,0 +1,102 @@
+{
+  "id": "1429373120550",
+  "name": "Send Email Example 2",
+  "description": "BPD with a micro service as sub-flow",
+  "variables": [
+    {
+      "name": "emailSubject",
+      "type": "String",
+      "isCollection": false,
+      "scope": "Private"
+    },
+    {
+      "name": "emailBody",
+      "type": "String",
+      "isCollection": false,
+      "scope": "Private"
+    },
+    {
+      "name": "emailTo",
+      "type": "String",
+      "isCollection": true,
+      "scope": "Private"
+    }
+  ],
+  "swimLanes": [
+    {
+      "id": "sl-5",
+      "name": "Swim Lane for all"
+    }
+  ],
+  "flowObjects": [
+    {
+      "id": "4001",
+      "name": "start process",
+      "type": "StartEvent",
+      "swimLaneId": "sl-5"
+    },
+    {
+      "id": "4003",
+      "name": "Initialize",
+      "type": "InlineScript",
+      "swimLaneId": "sl-5",
+      "scriptRefId": "1429372764300"
+    },
+    {
+      "id": "4005",
+      "name": "Send Email",
+      "type": "SubFlow",
+      "subFlowType": "MicroService",
+      "subFlowId": "1234123443219",
+      "swimLaneId": "sl-5",
+      "dataMappings": [
+        {
+          "from": "data.emailTo",
+          "to": "emailTo",
+          "scope": "Input"
+        },
+        {
+          "from": "data.emailSubject",
+          "to": "emailSubject",
+          "scope": "Input"
+        },
+        {
+          "from": "data.emailBody",
+          "to": "emailBody",
+          "scope": "Input"
+        },
+        {
+          "from": "success",
+          "to": "data.success",
+          "scope": "Output"
+        }
+      ]
+    },
+    {
+      "id": "4007",
+      "name": "End",
+      "type": "EndEvent",
+      "swimLaneId": "sl-5"
+    }
+  ],
+  "connectingObjects": [
+    {
+      "id": "4002",
+      "name": "sequence 1",
+      "fromId": "4001",
+      "toId": "4003"
+    },
+    {
+      "id": "4004",
+      "name": "sequence 2",
+      "fromId": "4003",
+      "toId": "4005"
+    },
+    {
+      "id": "4006",
+      "name": "sequence 3",
+      "fromId": "4005",
+      "toId": "4007"
+    }
+  ]
+}

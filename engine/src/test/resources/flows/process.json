@@ -1,0 +1,101 @@
+{
+  "id": "1429373120533",
+  "name": "First flowly BPD",
+  "description": "Test Bpd",
+  "variables": [
+    {
+      "name": "subject",
+      "type": "String",
+      "isCollection": false,
+      "scope": "Private"
+    },
+    {
+      "name": "message",
+      "type": "String",
+      "isCollection": false,
+      "scope": "Private"
+    },
+    {
+      "name": "sendTo",
+      "type": "String",
+      "isCollection": true,
+      "scope": "Private"
+    }
+  ],
+  "swimLanes": [
+    {
+      "id": "sl-1",
+      "name": "First Swim Lane",
+      "description": "First Swim Lane"
+    }
+  ],
+  "flowObjects": [
+    {
+      "id": "1001",
+      "name": "start process",
+      "description": "Start BPD",
+      "type": "StartEvent",
+      "swimLaneId": "sl-1"
+    },
+    {
+      "id": "1003",
+      "name": "first activity",
+      "description": "this is first activity",
+      "type": "InlineScript",
+      "swimLaneId": "sl-1",
+      "scriptRefId": "1429372764270"
+    },
+    {
+      "id": "1007",
+      "name": "first email micro service",
+      "description": "Sends email using test SMTP service",
+      "type": "SubFlow",
+      "subFlowType": "MicroService",
+      "address": "io.flowly.engine.email.send",
+      "swimLaneId": "sl-1",
+      "dataMappings": [
+        {
+          "from": "data.sendTo",
+          "to": "emailTo",
+          "scope": "Input"
+        },
+        {
+          "from": "data.subject",
+          "to": "emailSubject",
+          "scope": "Input"
+        },
+        {
+          "from": "data.message",
+          "to": "emailBody",
+          "scope": "Input"
+        }
+      ]
+    },
+    {
+      "id": "1005",
+      "name": "end process",
+      "description": "End BPD",
+      "type": "EndEvent"
+    }
+  ],
+  "connectingObjects": [
+    {
+      "id": "1002",
+      "name": "sequence 1",
+      "fromId": "1001",
+      "toId": "1003"
+    },
+    {
+      "id": "1004",
+      "name": "sequence 2",
+      "fromId": "1003",
+      "toId": "1007"
+    },
+    {
+      "id": "1008",
+      "name": "sequence 2",
+      "fromId": "1007",
+      "toId": "1005"
+    }
+  ]
+}
