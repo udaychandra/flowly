@@ -65,7 +65,7 @@ public class Engine extends AbstractVerticle {
         // Register message handlers.
         VerticleUtils.registerHandlers(vertx.eventBus(), logger, createMessageHandlers(), h -> {
             if (h.succeeded()) {
-                logger.info("Deployed engine verticle");
+                logger.info("Deployed engine verticle.");
                 startFuture.complete();
             }
             else {
@@ -77,7 +77,7 @@ public class Engine extends AbstractVerticle {
     @Override
     public void stop(Future<Void> stopFuture) throws Exception {
         stopFuture.complete();
-        logger.info("Undeployed engine verticle");
+        logger.info("Undeployed engine verticle.");
     }
 
     /**

@@ -70,7 +70,7 @@ public class Build extends AbstractVerticle {
             // Register message handlers.
             VerticleUtils.registerHandlers(vertx.eventBus(), logger, createMessageHandlers(), h -> {
                 if (h.succeeded()) {
-                    logger.info("Deployed builder verticle");
+                    logger.info("Deployed build verticle.");
                     startFuture.complete();
                 }
                 else {
@@ -79,7 +79,7 @@ public class Build extends AbstractVerticle {
             });
         }
         catch (Exception ex) {
-            Failure failure = new Failure(4000, "Unable to deploy builder verticle.", ex);
+            Failure failure = new Failure(4000, "Unable to deploy build verticle.", ex);
             logger.error(failure.getError(), failure.getCause());
             startFuture.fail(failure);
         }
@@ -87,17 +87,10 @@ public class Build extends AbstractVerticle {
 
     @Override
     public void stop(Future<Void> stopFuture) throws Exception {
-        try {
-            vertx.sharedData().getLocalMap(DEPLOYED_APPS_KEY).clear();
-            stopFuture.complete();
+        vertx.sharedData().getLocalMap(DEPLOYED_APPS_KEY).clear();
+        stopFuture.complete();
 
-            logger.info("Undeployed builder verticle");
-        }
-        catch (Exception ex) {
-            Failure failure = new Failure(4001, "Unable to close compiler graph database.", ex);
-            logger.error(failure.getError(), failure.getCause());
-            stopFuture.fail(failure);
-        }
+        logger.info("Undeployed build verticle.");
     }
 
     /**
@@ -120,7 +113,7 @@ public class Build extends AbstractVerticle {
             Boolean appExists = deployedAppsMap.get(app.getId());
 
             if (appExists != null && appExists) {
-                Failure failure = new Failure(4002, "App is already deployed: " + app.getId());
+                Failure failure = new Failure(4001, "App is already deployed: " + app.getId());
                 logger.error(failure.getError());
                 message.fail(failure.getCode(), failure.getMessage());
             }
@@ -142,7 +135,7 @@ public class Build extends AbstractVerticle {
                         buildFlowsBlocking(app, flows, future, deployedAppsMap);
                     }
                     catch (Exception ex) {
-                        Failure failure = new Failure(4003, "Unable to compile flow verticles for app: " +
+                        Failure failure = new Failure(4002, "Unable to compile flow verticles for app: " +
                                 app.getId(), ex);
                         logger.error(failure.getError(), failure.getCause());
                         future.fail(failure);
@@ -153,7 +146,7 @@ public class Build extends AbstractVerticle {
                         message.reply(true);
                     }
                     else {
-                        message.fail(4003, r.cause().getMessage());
+                        message.fail(4002, r.cause().getMessage());
                     }
                 });
             }
@@ -174,7 +167,7 @@ public class Build extends AbstractVerticle {
                 deployedAppsMap.remove(app.getId());
 
                 VerticleUtils.undeployVerticles(deployedVerticles, vertx, undeployedHandler -> {
-                    Failure failure = new Failure(4004,
+                    Failure failure = new Failure(4003,
                             "Unable to compile flow verticles for app: " + app.getId(),
                             deployedHandler.cause());
                     logger.error(failure.getError(), failure.getCause());
@@ -197,14 +190,14 @@ public class Build extends AbstractVerticle {
             Set<String> deploymentIds = deployedAppsMap.get(app.getId());
 
             if (deploymentIds == null) {
-                Failure failure = new Failure(4005, "App is not deployed: " + app.getId());
+                Failure failure = new Failure(4004, "App is not deployed: " + app.getId());
                 logger.error(failure.getError());
                 message.fail(failure.getCode(), failure.getMessage());
             }
             else {
                 VerticleUtils.undeployVerticles(deploymentIds.iterator(), vertx, h -> {
                     if (h.failed()) {
-                        Failure failure = new Failure(4006, "Unable to undeploy app: " + app.getId(), h.cause());
+                        Failure failure = new Failure(4005, "Unable to undeploy app: " + app.getId(), h.cause());
                         logger.error(failure.getError(), failure.getCause());
                         message.fail(failure.getCode(), failure.getMessage());
                     }

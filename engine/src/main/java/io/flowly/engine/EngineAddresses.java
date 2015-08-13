@@ -38,16 +38,16 @@ public class EngineAddresses extends ClusterAddresses {
     public static final String FLOW_LIFECYCLE_EVENT = "io.flowly.engine:flow.event.lifecycle";
 
     // Repository addresses.
-    public static final String REPO_FLOW_SAVE = "repo.flow.save";
-    public static final String REPO_FLOW_DELETE = "repo.flow.delete";
-    public static final String REPO_FLOW_NEXT_ROUTE = "repo.flow.route.next";
-    public static final String REPO_FLOW_CREATE_INSTANCE = "repo.flow.create.instance";
-    public static final String REPO_FLOW_COMPLETE_INSTANCE = "repo.flow.instance.complete";
-    public static final String REPO_FLOW_FAIL_INSTANCE = "repo.flow.instance.fail";
-    public static final String REPO_FLOW_SAVE_INSTANCE = "repo.flow.instance.save";
-    public static final String REPO_FLOW_CREATE_FLOW_OBJECT_INSTANCE = "repo.flow.instance.flowObject.create";
-    public static final String REPO_ASSIGN_TASK = "repo.task.assign";
-    public static final String REPO_UPDATE_TASK = "repo.task.update";
+    public static final String REPO_FLOW_SAVE = "io.flowly.engine:repo.flow.save";
+    public static final String REPO_FLOW_DELETE = "io.flowly.engine:repo.flow.delete";
+    public static final String REPO_FLOW_NEXT_ROUTE = "io.flowly.engine:repo.flow.route.next";
+    public static final String REPO_FLOW_CREATE_INSTANCE = "io.flowly.engine:repo.flow.create.instance";
+    public static final String REPO_FLOW_COMPLETE_INSTANCE = "io.flowly.engine:repo.flow.instance.complete";
+    public static final String REPO_FLOW_FAIL_INSTANCE = "io.flowly.engine:repo.flow.instance.fail";
+    public static final String REPO_FLOW_SAVE_INSTANCE = "io.flowly.engine:repo.flow.instance.save";
+    public static final String REPO_FLOW_CREATE_FLOW_OBJECT_INSTANCE = "io.flowly.engine:repo.flow.instance.flowObject.create";
+    public static final String REPO_ASSIGN_TASK = "io.flowly.engine:repo.task.assign";
+    public static final String REPO_UPDATE_TASK = "io.flowly.engine:repo.task.update";
 
     public static String getFlowObjectBusAddress(String appId, String flowObjectId) {
         return appId + Compiler.COLON + flowObjectId;

@@ -55,7 +55,7 @@ public class Repository extends AbstractVerticle {
             // Register message handlers.
             VerticleUtils.registerHandlers(vertx.eventBus(), logger, createMessageHandlers(), h -> {
                 if (h.succeeded()) {
-                    logger.info("Deployed repository verticle");
+                    logger.info("Deployed repository verticle.");
                     startFuture.complete();
                 }
                 else {
