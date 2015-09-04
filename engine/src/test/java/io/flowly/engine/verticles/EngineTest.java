@@ -31,10 +31,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * @author <a>Uday Tatiraju</a>
+ * @author <a>Uday Tatiraju </a>
  */
 @RunWith(VertxUnitRunner.class)
-public class EngineTest extends BaseVerticleTest {
+public class
+        EngineTest extends BaseVerticleTest {
     private static class Checker {
         private Long instanceId;
 
