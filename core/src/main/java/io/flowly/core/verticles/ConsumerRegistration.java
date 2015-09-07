@@ -21,22 +21,22 @@ import io.vertx.core.eventbus.Message;
  *
  * @author <a>Uday Tatiraju</a>
  */
-public class ConsumerRegistration {
+public class ConsumerRegistration<T> {
     private boolean localOnly;
     private String address;
-    private Handler<Message<Object>> messageHandler;
+    private Handler<Message<T>> messageHandler;
 
-    public ConsumerRegistration(String address, Handler<Message<Object>> messageHandler) {
+    public ConsumerRegistration(String address, Handler<Message<T>> messageHandler) {
         this(address, messageHandler, false);
     }
 
-    public ConsumerRegistration(String address, Handler<Message<Object>> messageHandler, boolean localOnly) {
+    public ConsumerRegistration(String address, Handler<Message<T>> messageHandler, boolean localOnly) {
         this.address = address;
         this.messageHandler = messageHandler;
         this.localOnly = localOnly;
     }
 
-    public Handler<Message<Object>> getMessageHandler() {
+    public Handler<Message<T>> getMessageHandler() {
         return messageHandler;
     }
 

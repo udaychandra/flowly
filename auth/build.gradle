@@ -18,30 +18,31 @@ plugins {
 dependencies {
     compile "io.vertx:vertx-core:$vertxVersion"
     compile "io.vertx:vertx-hazelcast:$vertxVersion"
-    compile "io.vertx:vertx-lang-js:$vertxVersion"
-    compile "io.vertx:vertx-mail-service:$vertxVersion"
+    compile "io.vertx:vertx-web:$vertxVersion"
+    compile "io.vertx:vertx-auth-jwt:$vertxVersion"
+
+    compile "org.apache.tinkerpop:gremlin-core:$tinkerPopVersion"
 
     compile "com.thinkaurelius.titan:titan-core:$titanVersion"
     compile "com.thinkaurelius.titan:titan-berkeleyje:$titanVersion"
     compile "com.thinkaurelius.titan:titan-es:$titanVersion"
-    compile "org.apache.tinkerpop:gremlin-core:$tinkerPopVersion"
-
     compile ("com.carrotsearch:hppc:0.6.0") {
         force=true
     }
 
     compile project(":core")
 
-    testCompile "org.apache.tinkerpop:tinkergraph-gremlin:$tinkerPopVersion"
     testCompile "io.vertx:vertx-unit:$vertxVersion"
 }
 
 shadowJar {
     classifier = "fat"
+
     manifest {
         attributes "Main-Class": "io.vertx.core.Starter"
-        attributes "Main-Verticle": "io.flowly.engine.verticles.Kernel"
+        attributes "Main-Verticle": "io.flowly.auth.AuthServer"
     }
+
     mergeServiceFiles {
         include "META-INF/services/io.vertx.core.spi.VerticleFactory"
     }

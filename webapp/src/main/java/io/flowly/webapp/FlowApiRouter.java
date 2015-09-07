@@ -18,7 +18,6 @@ import io.flowly.core.codecs.FlowInstanceCodec;
 import io.flowly.core.data.FlowInstance;
 import io.flowly.core.verticles.ClusterAddresses;
 import io.vertx.core.Vertx;
-import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;

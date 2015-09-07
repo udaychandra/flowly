@@ -81,38 +81,38 @@ public class Repository extends AbstractVerticle {
      *
      * @return queue of consumer registrations.
      */
-    private Queue<ConsumerRegistration> createMessageHandlers() {
-        Queue<ConsumerRegistration> registrations = new LinkedList<>();
+    private Queue<ConsumerRegistration<Object>> createMessageHandlers() {
+        Queue<ConsumerRegistration<Object>> registrations = new LinkedList<>();
 
-        registrations.add(new ConsumerRegistration(EngineAddresses.REPO_FLOW_SAVE,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.REPO_FLOW_SAVE,
                 flowManager.saveFlowHandler(), true));
-        registrations.add(new ConsumerRegistration(EngineAddresses.REPO_FLOW_DELETE,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.REPO_FLOW_DELETE,
                 flowManager.deleteFlowHandler(), true));
-        registrations.add(new ConsumerRegistration(EngineAddresses.REPO_FLOW_NEXT_ROUTE,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.REPO_FLOW_NEXT_ROUTE,
                 flowManager.flowNextRouteHandler(), true));
 
-        registrations.add(new ConsumerRegistration(EngineAddresses.GET_USER_INBOX,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.GET_USER_INBOX,
                 instanceManager.getInboxHandler()));
-        registrations.add(new ConsumerRegistration(EngineAddresses.GET_USER_FLOWS,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.GET_USER_FLOWS,
                 flowManager.getFlowsHandler()));
-        registrations.add(new ConsumerRegistration(EngineAddresses.GET_FLOW_INSTANCE_TASK,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.GET_FLOW_INSTANCE_TASK,
                 instanceManager.getInstanceAtFlowObjectHandler()));
 
-        registrations.add(new ConsumerRegistration(EngineAddresses.REPO_FLOW_CREATE_INSTANCE,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.REPO_FLOW_CREATE_INSTANCE,
                 instanceManager.createInstanceHandler(), true));
-        registrations.add(new ConsumerRegistration(EngineAddresses.REPO_FLOW_SAVE_INSTANCE,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.REPO_FLOW_SAVE_INSTANCE,
                 instanceManager.saveInstanceHandler(), true));
-        registrations.add(new ConsumerRegistration(EngineAddresses.REPO_FLOW_COMPLETE_INSTANCE,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.REPO_FLOW_COMPLETE_INSTANCE,
                 instanceManager.completeInstanceHandler(), true));
-        registrations.add(new ConsumerRegistration(EngineAddresses.REPO_FLOW_FAIL_INSTANCE,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.REPO_FLOW_FAIL_INSTANCE,
                 instanceManager.failInstanceHandler(), true));
 
-        registrations.add(new ConsumerRegistration(EngineAddresses.REPO_FLOW_CREATE_FLOW_OBJECT_INSTANCE,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.REPO_FLOW_CREATE_FLOW_OBJECT_INSTANCE,
                 instanceManager.createFlowObjectInstanceHandler(), true));
 
-        registrations.add(new ConsumerRegistration(EngineAddresses.REPO_ASSIGN_TASK,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.REPO_ASSIGN_TASK,
                 userManager.assignTaskHandler()));
-        registrations.add(new ConsumerRegistration(EngineAddresses.REPO_UPDATE_TASK,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.REPO_UPDATE_TASK,
                 userManager.updateTaskHandler()));
 
         return registrations;

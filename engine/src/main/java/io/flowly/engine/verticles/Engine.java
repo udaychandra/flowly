@@ -85,28 +85,28 @@ public class Engine extends AbstractVerticle {
      *
      * @return queue of consumer registrations.
      */
-    private Queue<ConsumerRegistration> createMessageHandlers() {
-        Queue<ConsumerRegistration> registrations = new LinkedList<>();
-        registrations.add(new ConsumerRegistration(EngineAddresses.START_FLOW_INSTANCE,
+    private Queue<ConsumerRegistration<Object>> createMessageHandlers() {
+        Queue<ConsumerRegistration<Object>> registrations = new LinkedList<>();
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.START_FLOW_INSTANCE,
                 startInstanceHandler()));
 
-        registrations.add(new ConsumerRegistration(EngineAddresses.HOP_FLOW_INSTANCE,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.HOP_FLOW_INSTANCE,
                 hopInstanceHandler(), true));
-        registrations.add(new ConsumerRegistration(EngineAddresses.HOP_INTO_FLOW_INSTANCE,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.HOP_INTO_FLOW_INSTANCE,
                 hopIntoInstanceHandler(), true));
-        registrations.add(new ConsumerRegistration(EngineAddresses.FAIL_FLOW_INSTANCE,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.FAIL_FLOW_INSTANCE,
                 failInstanceHandler(), true));
 
-        registrations.add(new ConsumerRegistration(EngineAddresses.AWAIT_USER_INTERACTION,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.AWAIT_USER_INTERACTION,
                 awaitUserInteractionHandler(), true));
-        registrations.add(new ConsumerRegistration(EngineAddresses.START_FLOW_INSTANCE_TASK,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.START_FLOW_INSTANCE_TASK,
                 startUserInteractionHandler()));
 
-        registrations.add(new ConsumerRegistration(EngineAddresses.START_USER_INTERACTION_VIEW,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.START_USER_INTERACTION_VIEW,
                 startViewHandler(), true));
-        registrations.add(new ConsumerRegistration(EngineAddresses.SAVE_FLOW_INSTANCE_TASK,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.SAVE_FLOW_INSTANCE_TASK,
                 saveViewHandler()));
-        registrations.add(new ConsumerRegistration(EngineAddresses.COMPLETE_FLOW_INSTANCE_TASK,
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.COMPLETE_FLOW_INSTANCE_TASK,
                 completeViewHandler()));
 
         return registrations;

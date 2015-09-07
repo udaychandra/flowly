@@ -13,6 +13,10 @@
 
 dependencies {
     compile "io.vertx:vertx-core:$vertxVersion"
+    compile "io.vertx:vertx-web:$vertxVersion"
     compile "com.google.code.gson:gson:2.3.1"
+    compile "org.apache.commons:commons-lang3:3.4"
+    compile "org.apache.tinkerpop:gremlin-core:$tinkerPopVersion"
+
     testCompile "io.vertx:vertx-unit:$vertxVersion"
 }

@@ -98,10 +98,10 @@ public class Build extends AbstractVerticle {
      *
      * @return queue of consumer registrations.
      */
-    private Queue<ConsumerRegistration> createMessageHandlers() {
-        Queue<ConsumerRegistration> registrations = new LinkedList<>();
-        registrations.add(new ConsumerRegistration(EngineAddresses.DEPLOY_APP, deployAppHandler()));
-        registrations.add(new ConsumerRegistration(EngineAddresses.UNDEPLOY_APP, undeployHandler()));
+    private Queue<ConsumerRegistration<Object>> createMessageHandlers() {
+        Queue<ConsumerRegistration<Object>> registrations = new LinkedList<>();
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.DEPLOY_APP, deployAppHandler()));
+        registrations.add(new ConsumerRegistration<>(EngineAddresses.UNDEPLOY_APP, undeployHandler()));
 
         return registrations;
     }
@@ -232,20 +232,29 @@ public class Build extends AbstractVerticle {
         // Parse all flow definitions.
         Parser parser = new AssetParser(fileSystem);
         List<String> filePaths;
+        String path = PathUtils.createPath(appFolder, PathUtils.PROCESSES_FOLDER);
 
-        filePaths = fileSystem.readDirBlocking(PathUtils.createPath(appFolder, PathUtils.PROCESSES_FOLDER));
-        for (String filePath : filePaths) {
-            flows.add(parser.parseBlocking(filePath, Process.class));
+        if (fileSystem.existsBlocking(path)) {
+            filePaths = fileSystem.readDirBlocking(path);
+            for (String filePath : filePaths) {
+                flows.add(parser.parseBlocking(filePath, Process.class));
+            }
         }
 
-        filePaths = fileSystem.readDirBlocking(PathUtils.createPath(appFolder, PathUtils.INTERACTIVE_SERVICES_FOLDER));
-        for (String filePath : filePaths) {
-            flows.add(parser.parseBlocking(filePath, InteractiveService.class));
+        path = PathUtils.createPath(appFolder, PathUtils.INTERACTIVE_SERVICES_FOLDER);
+        if (fileSystem.existsBlocking(path)) {
+            filePaths = fileSystem.readDirBlocking(path);
+            for (String filePath : filePaths) {
+                flows.add(parser.parseBlocking(filePath, InteractiveService.class));
+            }
         }
 
-        filePaths = fileSystem.readDirBlocking(PathUtils.createPath(appFolder, PathUtils.MICRO_SERVICES_FOLDER));
-        for (String filePath : filePaths) {
-            flows.add(parser.parseBlocking(filePath, MicroService.class));
+        path = PathUtils.createPath(appFolder, PathUtils.MICRO_SERVICES_FOLDER);
+        if (fileSystem.existsBlocking(path)) {
+            filePaths = fileSystem.readDirBlocking(path);
+            for (String filePath : filePaths) {
+                flows.add(parser.parseBlocking(filePath, MicroService.class));
+            }
         }
 
         return flows;

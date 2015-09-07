@@ -27,10 +27,6 @@ public class JsonKeys extends ObjectKeys {
     public static final String PUBLISH_FLOW_LIFE_CYCLE_EVENTS = "flow.events.lifecycle.publish";
     public static final String SCAN_APPS_ON_KERNEL_START = "kernel.start.apps.scan";
 
-    // Titan graph config keys
-    public static final String DB_STORAGE_DIRECTORY = "storage.directory";
-    public static final String DB_STORAGE_BACKEND = "storage.backend";
-
     // Flow keys
     public static final String INSTANCE = "instance";
 

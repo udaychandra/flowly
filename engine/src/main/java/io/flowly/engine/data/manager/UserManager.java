@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Defines operations on users and groups in flowly.
+ * Defines operations on users and teams in flowly.
  *
  * @author <a>Uday Tatiraju</a>
  */

@@ -94,7 +94,7 @@ public class VerticleUtils {
      * @param registrations queue of consumer registrations.
      * @param resultHandler handler that is invoked after all handlers are registered on the event bus.
      */
-    public static void registerHandlers(EventBus eventBus, Logger logger, Queue<ConsumerRegistration> registrations,
+    public static <T> void registerHandlers(EventBus eventBus, Logger logger, Queue<ConsumerRegistration<T>> registrations,
                                         Handler<AsyncResult<Void>> resultHandler) {
         Future<Void> future = Future.future();
         future.setHandler(resultHandler);
@@ -166,9 +166,9 @@ public class VerticleUtils {
         }
     }
 
-    private static void registerHandlers(EventBus eventBus, Logger logger, Queue<ConsumerRegistration> registrations,
-                                         Future<Void> future) {
-        ConsumerRegistration registration = registrations.remove();
+    private static <T> void registerHandlers(EventBus eventBus, Logger logger,
+                                             Queue<ConsumerRegistration<T>> registrations, Future<Void> future) {
+        ConsumerRegistration<T> registration = registrations.remove();
         if (registration.isLocalOnly()) {
             eventBus.localConsumer(registration.getAddress(), registration.getMessageHandler());
             recursivelyRegisterHandlers(eventBus, logger, registrations, future);
@@ -189,8 +189,8 @@ public class VerticleUtils {
         }
     }
 
-    private static void recursivelyRegisterHandlers(EventBus eventBus, Logger logger,
-                                                    Queue<ConsumerRegistration> registrations, Future<Void> future) {
+    private static <T> void recursivelyRegisterHandlers(EventBus eventBus, Logger logger,
+                                                    Queue<ConsumerRegistration<T>> registrations, Future<Void> future) {
         if (!registrations.isEmpty()) {
             registerHandlers(eventBus, logger, registrations, future);
         }

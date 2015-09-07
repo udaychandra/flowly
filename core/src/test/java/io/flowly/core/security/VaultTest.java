@@ -26,22 +26,22 @@ import java.io.File;
  */
 @RunWith(VertxUnitRunner.class)
 public class VaultTest extends BaseTestWithVertx {
-    String rootPath = getClass().getResource(File.separator).getPath();
+    private String path = getClass().getResource(File.separator).getPath() +
+            File.separator + System.currentTimeMillis();
 
     @Test
-    public void saveDataTest(TestContext context) {
-        String storePath = rootPath + "test.p12";
-        Vault vault = new Vault("secret", storePath, vertx.fileSystem());
+    public void saveDataTest(TestContext context) throws Exception {
+        Vault vault = new Vault("test".toCharArray(), path, vertx.fileSystem());
 
-        context.assertTrue(vault.saveData("key", "value"), "Data should be saved to the Vault.");
+        context.assertTrue(vault.saveData("key", "value".toCharArray()), "Data should be saved to the vault.");
     }
 
     @Test
-    public void getDataTest(TestContext context) {
-        String storePath = rootPath + "test.p12";
-        Vault vault = new Vault("secret", storePath, vertx.fileSystem());
+    public void getDataTest(TestContext context) throws Exception {
+        Vault vault = new Vault("test".toCharArray(), path, vertx.fileSystem());
 
-        context.assertTrue(vault.saveData("key", "value"), "Data should be saved to the Vault.");
-        context.assertEquals("value", vault.getData("key"), "Data retrieved from the Vault is not as expected.");
+        context.assertTrue(vault.saveData("key", "value".toCharArray()), "Data should be saved to the vault.");
+        context.assertEquals("value", new String(vault.getData("key")),
+                "Data retrieved from the vault is not as expected.");
     }
 }

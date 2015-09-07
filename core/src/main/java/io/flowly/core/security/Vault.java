@@ -30,7 +30,7 @@ import java.security.KeyStore;
  * @author <a>Uday Tatiraju</a>
  */
 public class Vault {
-    public static final String PKCS12_KEY_STORE = "PKCS12";
+    public static final String JCEKS_KEY_STORE = "JCEKS";
     public static final String PBE_SECRET_KEY_FACTORY = "PBE";
 
     private static final Logger logger = LoggerFactory.getLogger(Vault.class);
@@ -38,7 +38,6 @@ public class Vault {
     private KeyStore keyStore;
     private SecretKeyFactory secretKeyFactory;
     private KeyStore.PasswordProtection passwordProtection;
-    private String vaultKey;
     private String keyStoreFilePath;
     private FileSystem fileSystem;
 
@@ -49,19 +48,13 @@ public class Vault {
      * @param keyStoreFilePath the absolute path of the key store on the file system.
      * @param fileSystem vert.x file system.
      */
-    public Vault(String vaultKey, String keyStoreFilePath, FileSystem fileSystem) {
-        try {
-            this.vaultKey = vaultKey;
-            this.keyStoreFilePath = keyStoreFilePath;
-            this.fileSystem = fileSystem;
+    public Vault(char[] vaultKey, String keyStoreFilePath, FileSystem fileSystem) throws Exception {
+        this.keyStoreFilePath = keyStoreFilePath;
+        this.fileSystem = fileSystem;
 
-            keyStore = KeyStore.getInstance(PKCS12_KEY_STORE);
-            secretKeyFactory = SecretKeyFactory.getInstance(PBE_SECRET_KEY_FACTORY);
-            passwordProtection = new KeyStore.PasswordProtection(vaultKey.toCharArray());
-        }
-        catch (Exception ex) {
-            logger.error("Unable to create key store.", ex);
-        }
+        keyStore = KeyStore.getInstance(JCEKS_KEY_STORE);
+        secretKeyFactory = SecretKeyFactory.getInstance(PBE_SECRET_KEY_FACTORY);
+        passwordProtection = new KeyStore.PasswordProtection(vaultKey);
     }
 
     /**
@@ -70,51 +63,40 @@ public class Vault {
      * @param key used to save and retrieve data.
      * @param data the data to be stored in the key store.
      */
-    public boolean saveData(String key, String data) {
-        try {
-            loadKeyStore();
+    public boolean saveData(String key, char[] data) throws Exception {
+        loadKeyStore();
 
-            SecretKey secretKey = secretKeyFactory.generateSecret(new PBEKeySpec(data.toCharArray()));
-            keyStore.setEntry(key, new KeyStore.SecretKeyEntry(secretKey), passwordProtection);
-            keyStore.store(new FileOutputStream(keyStoreFilePath), vaultKey.toCharArray());
-            return true;
-        }
-        catch (Exception ex) {
-            logger.error("Unable to save key/value pair to key store.", ex);
-            return false;
-        }
+        SecretKey secretKey = secretKeyFactory.generateSecret(new PBEKeySpec(data));
+        keyStore.setEntry(key, new KeyStore.SecretKeyEntry(secretKey), passwordProtection);
+        keyStore.store(new FileOutputStream(keyStoreFilePath), passwordProtection.getPassword());
+
+        return true;
     }
 
     /**
      * Get the data saved in the key store based on the given key.
      *
      * @param key used to retrieve data from the key store.
-     * @return the stored data as a string.
+     * @return the stored data corresponding to the specified key.
      */
-    public String getData(String key) {
-        try {
-            loadKeyStore();
+    public char[] getData(String key) throws Exception {
+        loadKeyStore();
 
-            KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keyStore.
-                    getEntry(key, passwordProtection);
-            PBEKeySpec keySpec = (PBEKeySpec) secretKeyFactory.
-                    getKeySpec(secretKeyEntry.getSecretKey(), PBEKeySpec.class);
+        KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keyStore.
+                getEntry(key, passwordProtection);
+        PBEKeySpec keySpec = (PBEKeySpec) secretKeyFactory.
+                getKeySpec(secretKeyEntry.getSecretKey(), PBEKeySpec.class);
 
-            return new String(keySpec.getPassword());
-        }
-        catch (Exception ex) {
-            logger.error("Unable to get key/value pair from key store.", ex);
-            return null;
-        }
+        return keySpec.getPassword();
     }
 
     private void loadKeyStore() throws Exception {
         if (fileSystem.existsBlocking(keyStoreFilePath)) {
-            keyStore.load(new FileInputStream(keyStoreFilePath), vaultKey.toCharArray());
+            keyStore.load(new FileInputStream(keyStoreFilePath), passwordProtection.getPassword());
         }
         else {
             fileSystem.createFileBlocking(keyStoreFilePath);
-            keyStore.load(null, null);
+            keyStore.load(null, passwordProtection.getPassword());
         }
     }
 }

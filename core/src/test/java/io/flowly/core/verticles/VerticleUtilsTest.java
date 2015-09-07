@@ -87,12 +87,12 @@ public class VerticleUtilsTest extends BaseTestWithVertx {
         String address1 = "address1";
         String address2 = "address2";
 
-        Queue<ConsumerRegistration> registrations = new LinkedList<>();
-        registrations.add(new ConsumerRegistration(address1, handler1 -> {
+        Queue<ConsumerRegistration<String>> registrations = new LinkedList<>();
+        registrations.add(new ConsumerRegistration<>(address1, handler1 -> {
             context.assertEquals("Hello", handler1.body(), "Message recieved is not as expected.");
             async1.complete();
         }));
-        registrations.add(new ConsumerRegistration(address2, handler2 -> {
+        registrations.add(new ConsumerRegistration<>(address2, handler2 -> {
             context.assertEquals("Flowly", handler2.body(), "Message recieved is not as expected.");
             async2.complete();
         }));

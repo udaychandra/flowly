@@ -162,13 +162,15 @@ public class FlowReadWriteManager extends FlowReadManager {
     }
 
     private void deleteRouteVertices(String flowId) {
-        for (Vertex routeVertex : graph.traversal().V().has(Schema.V_P_ROUTE_FLOW_ID, flowId).toList()) {
+        for (Vertex routeVertex : graph.traversal().V().has(Schema.V_FLOW_ROUTE,
+                Schema.V_P_ROUTE_FLOW_ID, flowId).toList()) {
             routeVertex.remove();
         }
     }
 
     private void deleteFlowMetadataVertex(Flow flow) {
-        for (Vertex flowVertex : graph.traversal().V().has(Schema.V_P_FLOW_ID, flow.getId()).toList()) {
+        for (Vertex flowVertex : graph.traversal().V().has(Schema.V_FLOW_METADATA,
+                Schema.V_P_FLOW_ID, flow.getId()).toList()) {
             flowVertex.remove();
         }
     }

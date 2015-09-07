@@ -11,6 +11,7 @@
  *  You may elect to redistribute this code under this license.
  */
 
+include "auth"
 include "core"
 include "engine"
 include "webapp"

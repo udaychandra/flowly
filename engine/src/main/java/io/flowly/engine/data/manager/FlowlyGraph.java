@@ -31,7 +31,7 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import java.util.Date;
 
 /**
- * Create a Titan graph by configuring the stotage and indexing options.
+ * Create a Titan graph by configuring the storage and indexing options.
  * Prepares the graph schema when the graph is created for the first time.
  *
  * @author <a>Uday Tatiraju</a>
