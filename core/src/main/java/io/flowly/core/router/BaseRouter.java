@@ -54,7 +54,7 @@ public abstract class BaseRouter {
         return args;
     }
 
-    protected <T extends JsonObject> void prepareRoute(HttpMethod httpMethod, String path, String address,
+    protected <T> void prepareRoute(HttpMethod httpMethod, String path, String address,
                                                        String error, boolean chunkedResponse) {
         router.route(httpMethod, path).handler(requestHandler -> {
             try {
@@ -62,12 +62,14 @@ public abstract class BaseRouter {
                     T result = reply.result().body();
 
                     if (result != null) {
-                        writeSuccessResponse(requestHandler, result.encode(), chunkedResponse);
-                    } else {
+                        writeSuccessResponse(requestHandler, result.toString(), chunkedResponse);
+                    }
+                    else {
                         writeErrorResponse(requestHandler, error);
                     }
                 });
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 logger.error(error, ex);
                 writeErrorResponse(requestHandler, error);
             }

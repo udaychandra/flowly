@@ -282,6 +282,7 @@ public class UserManagerTest extends BaseManagerTest {
 
         if (includePassword) {
             user.setPassword("password");
+            user.put("confirmPassword", "password");
         }
 
         if (includeMiddleName) {

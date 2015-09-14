@@ -122,31 +122,36 @@ public class GroupManager extends BaseManager {
      */
     @Override
     public JsonArray update(JsonObject group) {
-        Group newGroup = new Group(group);
-        JsonArray errors = newGroup.validate(true);
+        Group updatedGroup = new Group(group);
+        JsonArray errors = updatedGroup.validate(true);
 
         if (errors.size() == 0) {
             try {
-                Vertex groupVertex = getVertex(newGroup.getId());
-                setPropertyValue(groupVertex, Schema.V_P_GROUP_ID, newGroup.getGroupId());
-                setPropertyValue(groupVertex, Schema.V_P_DESCRIPTION, newGroup.getDescription());
+                Vertex groupVertex = getVertex(updatedGroup.getId());
+                setGroupId(groupVertex, updatedGroup, true);
+                setPropertyValue(groupVertex, Schema.V_P_DESCRIPTION, updatedGroup.getDescription());
 
                 // Update group memberships.
-                redoMemberships(groupVertex, false, newGroup.getJsonArray(User.GROUPS_TO_ADD),
-                        newGroup.getJsonArray(User.GROUPS_TO_REMOVE));
+                redoMemberships(groupVertex, false, updatedGroup.getJsonArray(User.GROUPS_TO_ADD),
+                        updatedGroup.getJsonArray(User.GROUPS_TO_REMOVE));
 
                 // Update group users.
-                redoMemberships(groupVertex, true, newGroup.getJsonArray(Group.USERS_TO_ADD),
-                        newGroup.getJsonArray(Group.USERS_TO_REMOVE));
+                redoMemberships(groupVertex, true, updatedGroup.getJsonArray(Group.USERS_TO_ADD),
+                        updatedGroup.getJsonArray(Group.USERS_TO_REMOVE));
 
                 // Update permissions.
                 redoPermissions(groupVertex, group);
 
                 commit();
             }
+            catch (IllegalArgumentException ex) {
+                rollback();
+                errors.add(ex.getMessage());
+                logger.error(ex);
+            }
             catch (Exception ex) {
                 rollback();
-                String error = "Unable to update group: " + newGroup.getGroupId();
+                String error = "Unable to update group: " + updatedGroup.getGroupId();
                 logger.error(error, ex);
                 errors.add(error);
             }
@@ -329,7 +334,7 @@ public class GroupManager extends BaseManager {
         try {
             // Cannot delete administrators group.
             Vertex vertex = getVertex(id);
-            if (!getPropertyValue(vertex, Schema.V_P_GROUP_ID).equals(ObjectKeys.ADMIN_GROUP_ID)) {
+            if (!ObjectKeys.ADMIN_GROUP_ID.equalsIgnoreCase(getPropertyValue(vertex, Schema.V_P_GROUP_ID))) {
                 errors = super.delete(id);
             }
             else {
@@ -387,5 +392,24 @@ public class GroupManager extends BaseManager {
             }
 
         }).toList();
+    }
+
+    private void setGroupId(Vertex groupVertex, Group group, boolean isUpdate) {
+        if (isUpdate) {
+            String oldGroupId = getPropertyValue(groupVertex, Schema.V_P_GROUP_ID);
+            String newGroupId = group.getGroupId();
+
+            if (oldGroupId.equalsIgnoreCase(ObjectKeys.ADMIN_GROUP_ID)) {
+                if (!oldGroupId.equalsIgnoreCase(newGroupId)) {
+                    throw new IllegalArgumentException("Cannot change the administrator group id.");
+                }
+            }
+            else {
+                setPropertyValue(groupVertex, Schema.V_P_GROUP_ID, group.getGroupId());
+            }
+        }
+        else {
+            setPropertyValue(groupVertex, Schema.V_P_GROUP_ID, group.getGroupId());
+        }
     }
 }

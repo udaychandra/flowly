@@ -143,6 +143,11 @@ public class UserManager extends BaseManager {
 
             commit();
         }
+        catch (IllegalArgumentException ex) {
+            rollback();
+            errors.add(ex.getMessage());
+            logger.error(ex);
+        }
         catch (Exception ex) {
             rollback();
             String error = "Unable to update user: " + updatedUser.getId();
@@ -512,7 +517,7 @@ public class UserManager extends BaseManager {
     }
 
     private void setUserAttributes(Vertex userVertex, User user, boolean isUpdate) throws Exception {
-        setPropertyValue(userVertex, Schema.V_P_USER_ID, user.getUserId());
+        setUserId(userVertex, user, isUpdate);
 
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
@@ -523,11 +528,10 @@ public class UserManager extends BaseManager {
         setPropertyValue(userVertex, Schema.V_P_MIDDLE_NAME, middleName);
         setFullName(userVertex, firstName, lastName, middleName, isUpdate);
 
-        setPropertyValue(userVertex, Schema.V_P_IS_INTERNAL, user.isInternal());
-
         String password = user.getPassword();
         if (password != null) {
             setPropertyValue(userVertex, Schema.V_P_PASSWORD, PasswordHash.createHash(password));
+            setPropertyValue(userVertex, Schema.V_P_IS_INTERNAL, true);
         }
     }
 
@@ -539,7 +543,7 @@ public class UserManager extends BaseManager {
      * @param lastName user's last name.
      * @param middleName user's middle name.
      */
-    public void setFullName(Vertex userVertex, String firstName, String lastName, String middleName, boolean isUpdate) {
+    private void setFullName(Vertex userVertex, String firstName, String lastName, String middleName, boolean isUpdate) {
         if (firstName == null && lastName == null && middleName == null) {
             return;
         }
@@ -562,5 +566,25 @@ public class UserManager extends BaseManager {
         String fullName = middleName == null ?
                 (firstName + " " + lastName) : (firstName + " " + middleName + " " + lastName);
         setPropertyValue(userVertex, Schema.V_P_NAME, fullName);
+    }
+
+    private void setUserId(Vertex userVertex, User user, boolean isUpdate) {
+        if (isUpdate) {
+            String originalUserId = getPropertyValue(userVertex, Schema.V_P_USER_ID);
+            String newUserId = user.getUserId();
+
+            // Cannot change admin id.
+            if (originalUserId.equalsIgnoreCase(ObjectKeys.ADMIN_USER_ID)) {
+                if (!originalUserId.equalsIgnoreCase(newUserId)) {
+                    throw new IllegalArgumentException("Cannot change the admin user id.");
+                }
+            }
+            else {
+                setPropertyValue(userVertex, Schema.V_P_USER_ID, newUserId);
+            }
+        }
+        else {
+            setPropertyValue(userVertex, Schema.V_P_USER_ID, user.getUserId());
+        }
     }
 }

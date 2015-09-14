@@ -32,7 +32,11 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.auth.jwt.JWTAuth;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.StaticHandler;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Public facing access management web server.
@@ -64,10 +68,19 @@ public class AuthServer extends AbstractVerticle {
             if (h.succeeded()) {
                 initAuthProvider(config());
 
-                // TODO: Make this https.
+                // TODO: URGENT - Make this https.
                 HttpServer server = vertx.createHttpServer();
                 Router router = Router.router(vertx);
                 router.route().handler(BodyHandler.create());
+
+                // TODO: Add patterns from config.
+                Set<HttpMethod> allowedMethods = new HashSet<>();
+                allowedMethods.add(HttpMethod.GET);
+                allowedMethods.add(HttpMethod.POST);
+
+                router.route().handler(CorsHandler.create("http://localhost:.*").
+                        allowedHeader("Authorization").
+                        allowedMethods(allowedMethods).allowCredentials(true));
 
                 StaticHandler staticHandler = StaticHandler.create();
                 router.routeWithRegex(HttpMethod.GET, STATIC_FILES_PATTERN).handler(staticHandler);

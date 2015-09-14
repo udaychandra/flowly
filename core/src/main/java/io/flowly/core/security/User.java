@@ -33,6 +33,7 @@ public class User extends Entity {
     public static final String FULL_NAME = "fullName";
     public static final String IS_INTERNAL = "isInternal";
     public static final String PASSWORD = "password";
+    public static final String CONFIRM_PASSWORD = "confirmPassword";
     public static final String AUTHENTICATED = "authenticated";
 
     public static final String DIRECT_MEMBERSHIPS = "directMemberships";
@@ -146,8 +147,16 @@ public class User extends Entity {
             validateStringProperty(errors, getLastName(), "Last name cannot be blank.");
         }
 
-        if (BooleanUtils.isTrue(isInternal()) && containsKey(PASSWORD)) {
-            validateStringProperty(errors, getPassword(), "Password cannot be blank.");
+        if (containsKey(PASSWORD)) {
+            String password = getPassword();
+            String confirmPassword = getString(CONFIRM_PASSWORD);
+
+            validateStringProperty(errors, password, "Password cannot be blank.");
+            validateStringProperty(errors, confirmPassword, "Confirm password cannot be blank.");
+
+            if (!password.equals(confirmPassword)) {
+                errors.add("Specified password does not match confirmed password.");
+            }
         }
 
         return errors;
